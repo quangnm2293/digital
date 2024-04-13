@@ -1,5 +1,6 @@
-const BASE_URL = "https://frontend-exam.digitalfortress.dev/projects";
-
+const BASE_URL = "https://frontend-exam.digitalfortress.dev";
+const accessTokenDummy =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3MTMwMDE2ODl9.6S6hp_0uGCIT8u9AWJmMyyTt8GqP0psEm2Kc1zYkVkQ";
 async function refreshAccessToken() {
   const response = await fetch(`${BASE_URL}/auth/refresh-token`);
   const data = await response.json();
@@ -21,10 +22,10 @@ async function handle401Error(response, url) {
 }
 
 async function fetchAPI(endpoint, options = {}) {
-  if (accessToken) {
+  if (accessTokenDummy) {
     options.headers = {
       ...options.headers,
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessTokenDummy}`,
     };
   }
 
@@ -39,5 +40,23 @@ async function fetchAPI(endpoint, options = {}) {
   }
   return handledResponse.json();
 }
+async function postAPI(endpoint, data) {
+  const response = await fetch(`${BASE_URL}/${endpoint}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  const handledResponse = await handle401Error(
+    response,
+    `${BASE_URL}/${endpoint}`
+  );
 
-export { fetchAPI };
+  if (!handledResponse.ok) {
+    throw new Error("API request failed");
+  }
+  return handledResponse.json();
+}
+
+export { fetchAPI, postAPI };
