@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -9,9 +10,20 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const theme = cookies().get("theme");
+  console.log({ theme });
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className={theme?.value}>
+      <body
+        className={`bg-white
+        text-black
+        dark:bg-black
+        dark:text-white
+        transition
+        duration-700"`}
+      >
+        {children}
+      </body>
     </html>
   );
 }
