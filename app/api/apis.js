@@ -9,11 +9,11 @@ async function refreshAccessToken() {
 
 async function handle401Error(response, url) {
   if (response.status === 401) {
-    await refreshAccessToken();
+    const data = await refreshAccessToken();
     const newResponse = await fetch(url, {
       headers: {
         ...response.headers,
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${data.access_token}`,
       },
     });
     return newResponse;
